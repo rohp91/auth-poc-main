@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui-service-app
+  labels:
+    app: ui-service-app # Changed to 'app' to match service selector
+spec:
+  selector:
+    matchLabels:
+      app: ui-service-app # Added matchLabels
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: ui-service-app
+        app_type: frontend
+    spec:
+      containers:
+        - image: api-gateway:6.0
+          name: ui-service-app
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "550M"
+            limits: # Added limits
+              cpu: "400m"
+              memory: "750M"
+          ports:
+            - containerPort: 80
+              name: ui-service-app
+          imagePullPolicy: Never # Moved to container level
+          envFrom:
+            - configMapRef:
+                name: my-env-config
+      restartPolicy: Always
+# ---
+# apiVersion: v1 # Added apiVersion for Service
+# kind: Service
+# metadata:
+#   name: ui-service-app
+# spec:
+#   selector:
+#     app: ui-service-app
+#   type: NodePort
+#   ports:
+#     - port: 80
+#       targetPort: 80
+#       nodePort: 31686
+#       protocol: TCP
+---
+apiVersion: v1 # Added apiVersion for Service
+kind: Service
+metadata:
+  name: ui-service-app
+spec:
+  selector:
+    app: ui-service-app
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-env-config
+data:
+  REDIS_URL: "redis://redis:6379"
+  PORT: "80"
+  TENANT_CONFIG: |
+    {
+      "tenant1.abc.com": {
+        "keycloak_base_url": "http://keycloak.abc.com",
+        "keycloak_service_url": "http://keycloak:8080",
+        "realm": "tenant1",
+        "client_id": "api-gateway",
+        "client_secret": "QP79KqlZ1ZIP9FmUFbGFI1bNKHOlqLt8",
+        "callback_url": "http://tenant1.abc.com/callback",
+        "ui_url": "http://restaurant-service:8000/ui",
+        "backend_url": "http://fastapi-service:8001",
+        "ui_remote_url": "http://remote-ui-service:8000"
+      },
+      "tenant2.abc.com": {
+        "keycloak_base_url": "http://keycloak.abc.com",
+        "keycloak_service_url": "http://keycloak:8080",
+        "realm": "tenant2",
+        "client_id": "api-gateway-tenant-2",
+        "client_secret": "ROZ9pDCTfrFhTn5gHolbF2mLEJCdDGv3",
+        "callback_url": "http://tenant2.abc.com/callback",
+         "ui_url": "http://restaurant-service:8000/ui",
+        "backend_url": "http://fastapi-service:8001",
+        "ui_remote_url": "http://remote-ui-service:8000"
+      }
+    }

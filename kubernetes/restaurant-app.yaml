@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: restaurant-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: restaurant-app
+  template:
+    metadata:
+      labels:
+        app: restaurant-app
+    spec:
+      containers:
+      - name: restaurant-app
+        image: shell-app:9.0
+        imagePullPolicy: Never # Moved to container level
+        ports:
+        - containerPort: 8000
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "250m"
+        volumeMounts:
+        - name: work
+          subPath: env.js
+          mountPath: /usr/share/nginx/html/ui/env.js
+          readOnly: false
+      volumes: 
+      - name: work
+        configMap:
+            name: restaurent-app-config
+      
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: restaurant-service
+# spec:
+#   type: NodePort
+#   selector:
+#     app: restaurant-app
+#   ports:
+#   - protocol: TCP
+#     port: 9000
+#     targetPort: 9000
+#     nodePort: 30000  # Choose a port between 30000-32767
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: restaurant-service
+spec:
+  type: ClusterIP
+  selector:
+    app: restaurant-app
+  ports:
+  - protocol: TCP
+    port: 8000
+    targetPort: 8000
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: restaurent-app-config
+data:
+  env.js: |-
+        (function (window) {
+        window.__env = window.__env || {};
+        window.__env.production= false;
+        window.__env.apiUrl='/api/backend/';
+        }(this));
