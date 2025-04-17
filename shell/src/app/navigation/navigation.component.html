@@ -1,11 +1,24 @@
 
-<div>Welcome {{user.name}}</div>
-<div (click)="logoutUser()">Logout</div>
-<br>
-<ul>
-    <li>
-    <a routerLink="/home">Home</a>
-    <a routerLink="/restaurants">Restaurants</a>
-    <a routerLink="/flights/flight-search">Flights</a>
-    </li>
-</ul>
+<mat-toolbar>
+    <span style="padding-right: 1rem;">Restaurant App</span>
+    <span style="padding-right: 1rem;">
+      <a routerLink="/home">Home</a>
+    </span>
+    <span style="padding-right: 1rem;">
+      <a routerLink="/restaurants">Restaurants</a>
+    </span>
+    <span style="padding-right: 1rem;">
+      <a routerLink="/flights/flight-search">Flights</a>
+    </span>
+  
+    <span style="margin-left: auto; display: flex; align-items: center">
+      <span style="padding-right: 0.5rem;">Welcome {{user.name}}</span>
+      @if(darkMode()) {
+        <mat-icon (click)="changeTheme('light')">light_mode</mat-icon>
+      }
+      @else {
+        <mat-icon (click)="changeTheme('dark')">dark_mode</mat-icon>
+      }
+      <mat-icon style="margin-left: 0.5rem" (click)="logoutUser()">logout</mat-icon>
+    </span>
+  </mat-toolbar>

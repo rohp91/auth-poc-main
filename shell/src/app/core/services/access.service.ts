@@ -13,10 +13,10 @@ export class AccessService {
   load(): Observable<any>
   {
     console.log("inside load");
-    /* return this.apiService.get(`/user-info`) */
-    return of({user:{
-      name:'Abhishek'
-    }})  
+     return this.apiService.get(`/user-info`) 
+    // return of({user:{
+    //   name:'Abhishek'
+    // }})  
     .pipe(
       tap(user => { 
           console.log("User",user)

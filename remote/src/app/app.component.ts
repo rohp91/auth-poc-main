@@ -9,4 +9,8 @@ import { RouterOutlet } from '@angular/router';
 })
 export class AppComponent {
   title = 'remote';
+
+ngOnInit(){
+  document.body.style.setProperty('color-scheme','dark');  
+}
 }

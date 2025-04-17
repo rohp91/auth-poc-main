@@ -1,10 +1,18 @@
-const { withNativeFederation, shareAll } = require('@angular-architects/native-federation/config');
+const { withNativeFederation, share } = require('@angular-architects/native-federation/config');
 
 module.exports = withNativeFederation({
 
-  shared: {
-    ...shareAll({ singleton: true, strictVersion: true, requiredVersion: 'auto' }),
-  },
+  shared: share({
+    '@angular/core': { singleton: true, strictVersion: true, requiredVersion: 'auto' },
+    '@angular/common': { singleton: true, strictVersion: true, requiredVersion: 'auto' },
+    '@angular/router': { singleton: true, strictVersion: true, requiredVersion: 'auto' },
+    '@angular/platform-browser': { singleton: true, strictVersion: true, requiredVersion: 'auto' },
+    '@angular/platform-browser-dynamic': { singleton: true, strictVersion: true, requiredVersion: 'auto' },
+    '@angular/animations': { singleton: true, strictVersion: true, requiredVersion: 'auto' },
+    '@angular/material': { singleton: true, strictVersion: true, requiredVersion: 'auto' },
+    '@angular/cdk': { singleton: true, strictVersion: true, requiredVersion: 'auto' },
+    'rxjs': { singleton: true, strictVersion: true, requiredVersion: 'auto' },
+  }),
   skip: [
     'rxjs/ajax',
     'rxjs/fetch',

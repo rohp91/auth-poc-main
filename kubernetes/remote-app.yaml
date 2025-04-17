@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: remote-app
-        image: remote-app:1.0
+        image: remote-app:2.0
         imagePullPolicy: Never # Moved to container level
         ports:
         - containerPort: 8000

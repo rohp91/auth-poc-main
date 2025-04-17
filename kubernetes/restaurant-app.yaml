@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: restaurant-app
-        image: shell-app:9.0
+        image: shell-app:11.0
         imagePullPolicy: Never # Moved to container level
         ports:
         - containerPort: 8000
